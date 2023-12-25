@@ -10,6 +10,7 @@ import {
 import { useAppDispatch, useAppSelector } from "../../stores/hooks";
 import { FormattedMenu, linkTo, nestedMenu, enter, leave } from "./side-menu";
 import Lucide from "../../base-components/Lucide";
+<<<<<<< HEAD
 import users from "../../fakers/users";
 import clsx from "clsx";
 import SimpleBar from "simplebar";
@@ -18,6 +19,11 @@ import QuickSearch from "../../components/QuickSearch";
 import SwitchAccount from "../../components/SwitchAccount";
 import NotificationsPanel from "../../components/NotificationsPanel";
 import ActivitiesPanel from "../../components/ActivitiesPanel";
+=======
+import clsx from "clsx";
+import SimpleBar from "simplebar";
+import { Menu } from "../../base-components/Headless";
+>>>>>>> bf018c2 (ugly)
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -378,10 +384,17 @@ function Main() {
                   <div>⌘K</div>
                 </div>
               </div>
+<<<<<<< HEAD
               <QuickSearch
                 quickSearch={quickSearch}
                 setQuickSearch={setQuickSearch}
               />
+=======
+              {/* <QuickSearch
+                quickSearch={quickSearch}
+                setQuickSearch={setQuickSearch}
+              /> */}
+>>>>>>> bf018c2 (ugly)
               {/* END: Search */}
               {/* BEGIN: Notification & User Menu */}
               <div className="flex items-center flex-1">
@@ -422,10 +435,17 @@ function Main() {
                 </div>
                 <Menu className="ml-5">
                   <Menu.Button className="overflow-hidden rounded-full w-[36px] h-[36px] border-[3px] border-slate-200/70 image-fit">
+<<<<<<< HEAD
                     <img
                       alt="Tailwise - Admin Dashboard Template"
                       src={users.fakeUsers()[0].photo}
                     />
+=======
+                    {/* <img
+                      alt="Tailwise - Admin Dashboard Template"
+                      src={users.fakeUsers()[0].photo}
+                    /> */}
+>>>>>>> bf018c2 (ugly)
                   </Menu.Button>
                   <Menu.Items className="w-56 mt-1">
                     <Menu.Item
@@ -481,7 +501,11 @@ function Main() {
                   </Menu.Items>
                 </Menu>
               </div>
+<<<<<<< HEAD
               <ActivitiesPanel
+=======
+              {/* <ActivitiesPanel
+>>>>>>> bf018c2 (ugly)
                 activitiesPanel={activitiesPanel}
                 setActivitiesPanel={setActivitiesPanel}
               />
@@ -492,7 +516,11 @@ function Main() {
               <SwitchAccount
                 switchAccount={switchAccount}
                 setSwitchAccount={setSwitchAccount}
+<<<<<<< HEAD
               />
+=======
+              /> */}
+>>>>>>> bf018c2 (ugly)
               {/* END: Notification & User Menu */}
             </div>
           </div>

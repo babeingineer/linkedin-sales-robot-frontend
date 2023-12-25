@@ -1,6 +1,10 @@
 import axios from "axios";
 import { MouseEvent, useContext, useEffect, useRef, useState } from "react";
 import { ArrowRight, ChevronLeft } from "lucide-react";
+<<<<<<< HEAD
+=======
+import io, { Socket } from "socket.io-client";
+>>>>>>> bf018c2 (ugly)
 
 import _ from "lodash";
 import clsx from "clsx";
@@ -14,7 +18,11 @@ import { setLinkedinLoader } from "../../stores/linkedinLoaderSlice";
 
 import { AuthContext } from "../../providers/AuthProvider";
 
+<<<<<<< HEAD
 import { SERVER_URL } from "../../config";
+=======
+import { SERVER_URL, SOCKETIO_URL } from "../../config";
+>>>>>>> bf018c2 (ugly)
 
 interface ILinkedInLoginDialogProps {
   open: boolean;
@@ -32,13 +40,18 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
   const dispatch = useAppDispatch();
   const { account, setAccount } = useContext(AuthContext);
 
+<<<<<<< HEAD
   const [socketAvailable, setSocketAvailiable] = useState(false);
+=======
+  // const [socketAvailable, setSocketAvailiable] = useState(false);
+>>>>>>> bf018c2 (ugly)
   const [screenImageSrc, setScreenImageSrc] = useState("");
   const [lastSentDate, setLastSentDate] = useState<Date>(new Date());
   const [currentStep, setCurrentStep] = useState(1);
   const [currentSubStep, setCurrentSubStep] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(0);
 
+<<<<<<< HEAD
   const screenSocket = useRef<WebSocket>();
   const mouseSocket = useRef<WebSocket>();
   const keybdSocket = useRef<WebSocket>();
@@ -64,6 +77,44 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
 
   const onScreenReceive = (e: MessageEvent) => {
     setScreenImageSrc(`data:image/png;base64,${e.data}`);
+=======
+  // const screenSocket = useRef<Socket>();
+  // const mouseSocket = useRef<Socket>();
+  // const keybdSocket = useRef<Socket>();
+  const socket = useRef<Socket>();
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const onAddAccountClick = () => {
+    createSocket();
+    axios("/linkedinlogin")
+      .then((res) => res.data)
+      .then((response) => {
+        if (response === "success") {
+          dispatch(setLinkedinLoader(true));
+          setAccount({ ...account, hasLinkedin: true });
+          setCurrentPhase(0);
+          onClose();
+        }
+        destroySocket();
+      });
+  };
+
+  const onSocketOpen = () => {
+    console.log("--------------Socket Opened---------------");
+    setCurrentPhase(currentPhase + 1);
+  };
+
+  const onSocketClose = () => {
+    console.log("---------------Socket Closed---------------");
+    destroySocket();
+    setCurrentPhase(0);
+  };
+
+  const onScreenReceive = (data: any) => {
+    if (!imageRef.current) return;
+    console.log("-------------------Socket Data--------------", data);
+    setScreenImageSrc(`data:image/png;base64,${data}`);
+>>>>>>> bf018c2 (ugly)
   };
 
   const onContextMenu = (e: globalThis.MouseEvent) => {
@@ -71,7 +122,11 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
   };
 
   const onMouseDown = (e: MouseEvent) => {
+<<<<<<< HEAD
     if (!mouseSocket.current || !imageRef.current) return;
+=======
+    if (!socket.current || !imageRef.current) return;
+>>>>>>> bf018c2 (ugly)
     const screenWidth = imageRef.current.clientWidth;
     const screenHeight = imageRef.current.clientHeight;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -79,10 +134,17 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
     const y = e.clientY - rect.top;
     const scaledX = (x / screenWidth).toFixed(4);
     const scaledY = (y / screenHeight).toFixed(4);
+<<<<<<< HEAD
     mouseSocket.current.send(`MOUSEDOWN ${scaledX} ${scaledY} ${e.button}`);
   };
   const onMouseUp = (e: MouseEvent) => {
     if (!mouseSocket.current || !imageRef.current) return;
+=======
+    socket.current.emit("mouse", "MOUSEDOWN", scaledX, scaledY, e.button);
+  };
+  const onMouseUp = (e: MouseEvent) => {
+    if (!socket.current || !imageRef.current) return;
+>>>>>>> bf018c2 (ugly)
     const screenWidth = imageRef.current.clientWidth;
     const screenHeight = imageRef.current.clientHeight;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -90,11 +152,18 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
     const y = e.clientY - rect.top;
     const scaledX = (x / screenWidth).toFixed(4);
     const scaledY = (y / screenHeight).toFixed(4);
+<<<<<<< HEAD
     mouseSocket.current.send(`MOUSEUP ${scaledX} ${scaledY} ${e.button}`);
   };
   const onMouseMove = (e: MouseEvent) => {
     if (!mouseSocket.current || !imageRef.current) return;
     if (mouseSocket.current.readyState !== WebSocket.OPEN) return;
+=======
+    socket.current.emit("mouse", `MOUSEUP`, scaledX, scaledY, e.button);
+  };
+  const onMouseMove = (e: MouseEvent) => {
+    if (!socket.current || !imageRef.current) return;
+>>>>>>> bf018c2 (ugly)
 
     if (new Date().getTime() - lastSentDate.getTime() > 100) {
       setLastSentDate(new Date());
@@ -105,6 +174,7 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
       const y = e.clientY - rect.top;
       const scaledX = (x / screenWidth).toFixed(4);
       const scaledY = (y / screenHeight).toFixed(4);
+<<<<<<< HEAD
       mouseSocket.current.send(`MOVE ${scaledX} ${scaledY}`);
     }
   };
@@ -137,6 +207,37 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
 
     screenSocket.current.addEventListener("message", onScreenReceive);
     screenSocket.current.addEventListener("open", onScreenSocketOpen);
+=======
+      socket.current.emit("mouse", "MOVE", scaledX, scaledY);
+    }
+  };
+  const onWheel = (e: WheelEvent) => {
+    if (!socket.current) return;
+
+    const scrollValue = -e.deltaY; // This captures the scroll delta
+    socket.current.emit("mouse", "SCROLL", scrollValue);
+  };
+
+  const onKeyDown = (e: globalThis.KeyboardEvent) => {
+    if (!socket.current) return;
+
+    e.preventDefault();
+    socket.current.emit("kbd", "KEYDOWN", e.key);
+  };
+  const onKeyUp = (e: globalThis.KeyboardEvent) => {
+    if (!socket.current) return;
+
+    e.preventDefault();
+    socket.current.emit("kbd", "KEYUP", e.key);
+  };
+
+  const createSocket = () => {
+    console.log("---------------------Create Socket----------------");
+    socket.current = io(SOCKETIO_URL);
+    socket.current.on("connect", onSocketOpen);
+    socket.current.on("disconnect", onSocketClose);
+    socket.current.on("screen", onScreenReceive);
+>>>>>>> bf018c2 (ugly)
 
     document.addEventListener("contextmenu", onContextMenu);
     document.addEventListener("wheel", onWheel);
@@ -145,15 +246,20 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
   };
 
   const destroySocket = () => {
+<<<<<<< HEAD
     screenSocket.current?.close();
     mouseSocket.current?.close();
     keybdSocket.current?.close();
 
+=======
+    console.log("----------------Destroy Socket--------------");
+>>>>>>> bf018c2 (ugly)
     document.removeEventListener("contextmenu", onContextMenu);
     document.removeEventListener("wheel", onWheel);
     document.removeEventListener("keydown", onKeyDown);
     document.removeEventListener("keyup", onKeyUp);
 
+<<<<<<< HEAD
     screenSocket.current?.removeEventListener("message", onScreenReceive);
 
     delete screenSocket.current;
@@ -174,6 +280,21 @@ function Main({ open, onClose }: ILinkedInLoginDialogProps) {
       destroySocket();
     };
   }, [open, socketAvailable]);
+=======
+    if (socket.current) {
+      socket.current.off("open", onSocketOpen);
+      socket.current.off("close", onSocketClose);
+      socket.current.off("screen", onScreenReceive);
+      delete socket.current;
+    }
+  };
+
+  useEffect(() => {
+    if (!open) {
+      destroySocket();
+    }
+  }, [open]);
+>>>>>>> bf018c2 (ugly)
 
   return (
     <Slideover open={open} onClose={onClose} size="screen">

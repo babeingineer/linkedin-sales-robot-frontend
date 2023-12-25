@@ -2,7 +2,10 @@ import { useNavigate } from "react-router-dom";
 
 import { FormCheck, FormInput, FormLabel } from "../../base-components/Form";
 import Tippy from "../../base-components/Tippy";
+<<<<<<< HEAD
 import users from "../../fakers/users";
+=======
+>>>>>>> bf018c2 (ugly)
 import Button from "../../base-components/Button";
 import clsx from "clsx";
 import _ from "lodash";

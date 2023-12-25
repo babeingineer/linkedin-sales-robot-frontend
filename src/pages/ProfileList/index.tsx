@@ -11,8 +11,11 @@ import Tippy from "../../base-components/Tippy";
 import _ from "lodash";
 import Pagination from "../../components/Pagination";
 
+<<<<<<< HEAD
 import { SERVER_URL } from "../../config";
 
+=======
+>>>>>>> bf018c2 (ugly)
 function Main() {
   const [isProfileSearch, setIsProfileSearch] = useState<boolean>(false);
   const [profiles, setProfiles] = useState<any[]>([]);
